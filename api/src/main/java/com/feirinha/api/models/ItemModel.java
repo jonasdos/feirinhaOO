@@ -27,6 +27,7 @@ public class ItemModel {
   private int quantity; 
 
   public ItemModel(ItemDTO dto) {
+    
     this.name = dto.getName();
     this.quantity = dto.getQuantity();
   }

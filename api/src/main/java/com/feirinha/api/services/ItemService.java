@@ -3,10 +3,6 @@ package com.feirinha.api.services;
 import java.util.List;
 import java.util.Optional;
 
-import javax.management.RuntimeErrorException;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.feirinha.api.dtos.ItemDTO;
@@ -37,15 +33,21 @@ public Optional<ItemModel> getItemById(Long id) {
 public Optional<ItemModel> itemNameAndIdVerification(String name, Long id) {
   return itemRepository.findByNameAndIdNot(name, id);
 }
-public ItemModel putItem(Long id, ItemDTO body) {
+public Optional<ItemModel> updateItem(Long id, ItemDTO body) {
   Optional<ItemModel> item = itemRepository.findById(id);
 
- 
-ItemModel edit = item.get();
-edit.setName(body.getName());
-edit.setQuantity(body.getQuantity());
-
-return itemRepository.save(edit);
+  if(!item.isPresent()) {
+    return Optional.empty();
+  }
+  ItemModel edit = item.get();
+  edit.setName(body.getName());
+  edit.setQuantity(body.getQuantity());
+  itemRepository.save(edit);
+  
+  return Optional.of(edit);
+}
+public void deleteItem(Long id) {
+  itemRepository.deleteById(id);
 
 }
 }

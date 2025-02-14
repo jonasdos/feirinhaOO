@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.feirinha.api.dtos.ItemDTO;
 import com.feirinha.api.models.ItemModel;
-import com.feirinha.api.repositories.ItemRepository;
 import com.feirinha.api.services.ItemService;
 
 import jakarta.validation.Valid;
@@ -18,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -58,7 +58,7 @@ public class ItemController {
     }
   }
   @PutMapping("/{id}")
-    public ResponseEntity<Object> putItem(@PathVariable("id") Long id, @RequestBody @Valid ItemDTO body) {
+    public ResponseEntity<Object> updateItem(@PathVariable("id") Long id, @RequestBody @Valid ItemDTO body) {
 
       if(!itemService.getItemById(id).isPresent()) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -66,11 +66,17 @@ public class ItemController {
       if(itemService.itemNameAndIdVerification(body.getName(), id).isPresent()) {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
       }
-      ItemModel item = itemService.putItem(id, body);     
-     
+      Optional<ItemModel> item = itemService.updateItem(id, body);     
       return ResponseEntity.status(HttpStatus.OK).body(item);
     }
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteItem(@PathVariable("id") Long id) {
+      if(!itemService.getItemById(id).isPresent()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+      }
+      itemService.deleteItem(id);
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
   }
    
