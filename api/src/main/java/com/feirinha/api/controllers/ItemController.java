@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.feirinha.api.dtos.ItemDTO;
 import com.feirinha.api.models.ItemModel;
 import com.feirinha.api.repositories.ItemRepository;
+import com.feirinha.api.services.ItemService;
 
 import jakarta.validation.Valid;
 
@@ -25,23 +26,24 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RestController
 @RequestMapping("/items")
 public class ItemController {
-  final ItemRepository itemRepository;
-  ItemController(ItemRepository itemRepository) {
-    this.itemRepository = itemRepository;
+
+  final ItemService itemService;
+
+  ItemController(ItemService itemService) {
+    this.itemService = itemService;
   }
 
   @PostMapping()
   public ResponseEntity<Object> createItem(@RequestBody @Valid ItemDTO body) {
-      Optional<ItemModel> verifyItem = itemRepository.findByName(body.getName());
+      Optional<ItemModel> verifyItem = itemService.verifyItemService(body.getName());
       if(verifyItem.isPresent()) {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
       }
-      ItemModel item = new ItemModel(body);
-      ItemModel savedItem = itemRepository.save(item);
-           
+      ItemModel savedItem = itemService.saveItemService(body);    
       
       return ResponseEntity.status(HttpStatus.CREATED).body(savedItem);
   }
+  /*
   @GetMapping()
   public ResponseEntity<Object> getItems() {
       List<ItemModel> items = itemRepository.findAll();
@@ -53,7 +55,7 @@ public class ItemController {
 
       return ResponseEntity.status(HttpStatus.OK).build();
   }
-  
+   */
   
 
   
