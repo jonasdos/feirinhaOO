@@ -1,5 +1,6 @@
 package com.feirinha.api.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -23,5 +24,12 @@ public class ItemService {
   public ItemModel saveItemService(ItemDTO body) {
   ItemModel item = new ItemModel(body);
   return itemRepository.save(item);
+}
+
+public List<ItemModel> getAllItems() {
+  return itemRepository.findAll();
+}
+public Optional<ItemModel> getItemById(Long id) {
+  return itemRepository.findById(id);
 }
 }

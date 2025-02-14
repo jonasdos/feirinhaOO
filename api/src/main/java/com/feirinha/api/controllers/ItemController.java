@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class ItemController {
 
   final ItemService itemService;
-
   ItemController(ItemService itemService) {
     this.itemService = itemService;
   }
@@ -39,23 +38,27 @@ public class ItemController {
       if(verifyItem.isPresent()) {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
       }
-      ItemModel savedItem = itemService.saveItemService(body);    
-      
+      ItemModel savedItem = itemService.saveItemService(body);        
       return ResponseEntity.status(HttpStatus.CREATED).body(savedItem);
   }
-  /*
+
   @GetMapping()
   public ResponseEntity<Object> getItems() {
-      List<ItemModel> items = itemRepository.findAll();
-
+      List<ItemModel> items = itemService.getAllItems();
       return ResponseEntity.status(HttpStatus.OK).body(items);
   }
   @GetMapping("/{id}")
   public ResponseEntity<Object> getItemById(@PathVariable("id") Long id) {
+    Optional<ItemModel> item = itemService.getItemById(id);
+    if(item.isPresent()) {
+      return ResponseEntity.status(HttpStatus.OK).body(item);
+    } else {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
 
-      return ResponseEntity.status(HttpStatus.OK).build();
+
   }
-   */
+   
   
 
   
